@@ -115,6 +115,27 @@ class APIClient {
       console.error('Error removing auth token:', error);
     }
   }
+
+  /**
+   * Login user with email and password
+   */
+  async login(email, password) {
+    return this.post('/auth/login', { email, password });
+  }
+
+  /**
+   * Logout user
+   */
+  async logout() {
+    return this.post('/auth/logout');
+  }
+
+  /**
+   * Get current user profile
+   */
+  async getProfile() {
+    return this.get('/auth/profile');
+  }
 }
 
 export default new APIClient();

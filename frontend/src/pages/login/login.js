@@ -1,8 +1,13 @@
 /**
  * Login Page JavaScript
- * Handles form validation, password visibility toggle, and user interactions
+ * Handles form validation, submission, and user preferences
+ * Uses modular architecture with separate services
  */
+
 import { Eye, EyeOff, Key } from 'lucide';
+import * as validator from '../../services/validator.js';
+import * as storage from '../../services/storage.js';
+import * as authService from '../../services/auth-service.js';
 
 /**
  * LoginForm Class
@@ -20,6 +25,7 @@ class LoginForm {
     this.passwordErrorEl = document.getElementById('password-error');
 
     this.originalSubmitText = this.submitBtn.textContent;
+    this.isSubmitting = false;
 
     this.init();
   }
@@ -40,20 +46,20 @@ class LoginForm {
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
 
     // Email validation
-    this.emailInput.addEventListener('blur', () => this.validateEmail());
+    this.emailInput.addEventListener('blur', () => this.validateEmailField());
     this.emailInput.addEventListener('input', () => {
       if (this.emailInput.value) {
-        this.validateEmail();
+        this.validateEmailField();
       } else {
         this.clearError(this.emailInput, this.emailErrorEl);
       }
     });
 
     // Password validation
-    this.passwordInput.addEventListener('blur', () => this.validatePassword());
+    this.passwordInput.addEventListener('blur', () => this.validatePasswordField());
     this.passwordInput.addEventListener('input', () => {
       if (this.passwordInput.value) {
-        this.validatePassword();
+        this.validatePasswordField();
       } else {
         this.clearError(this.passwordInput, this.passwordErrorEl);
       }
@@ -61,23 +67,15 @@ class LoginForm {
   }
 
   /**
-   * Validate email field
+   * Validate email field using validator service
    * @returns {boolean} True if valid, false otherwise
    */
-  validateEmail() {
+  validateEmailField() {
     const email = this.emailInput.value.trim();
+    const validation = validator.validateEmail(email);
 
-    if (!email) {
-      this.setError(this.emailInput, this.emailErrorEl, 'Email address is required');
-      return false;
-    }
-
-    if (!this.isValidEmail(email)) {
-      this.setError(
-        this.emailInput,
-        this.emailErrorEl,
-        'Please enter a valid email address'
-      );
+    if (!validation.valid) {
+      this.setError(this.emailInput, this.emailErrorEl, validation.message);
       return false;
     }
 
@@ -86,38 +84,20 @@ class LoginForm {
   }
 
   /**
-   * Validate password field
+   * Validate password field using validator service
    * @returns {boolean} True if valid, false otherwise
    */
-  validatePassword() {
+  validatePasswordField() {
     const password = this.passwordInput.value;
+    const validation = validator.validatePassword(password);
 
-    if (!password) {
-      this.setError(this.passwordInput, this.passwordErrorEl, 'Password is required');
-      return false;
-    }
-
-    if (password.length < 6) {
-      this.setError(
-        this.passwordInput,
-        this.passwordErrorEl,
-        'Password must be at least 6 characters'
-      );
+    if (!validation.valid) {
+      this.setError(this.passwordInput, this.passwordErrorEl, validation.message);
       return false;
     }
 
     this.clearError(this.passwordInput, this.passwordErrorEl);
     return true;
-  }
-
-  /**
-   * Check if email format is valid
-   * @param {string} email - Email to validate
-   * @returns {boolean} True if valid format
-   */
-  isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   }
 
   /**
@@ -147,12 +127,15 @@ class LoginForm {
    * Handle form submission
    * @param {Event} e - Form submission event
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
+    // Prevent double submission
+    if (this.isSubmitting) return;
+
     // Validate both fields
-    const isEmailValid = this.validateEmail();
-    const isPasswordValid = this.validatePassword();
+    const isEmailValid = this.validateEmailField();
+    const isPasswordValid = this.validatePasswordField();
 
     if (!isEmailValid || !isPasswordValid) {
       return;
@@ -160,19 +143,33 @@ class LoginForm {
 
     // Handle remember me preference
     if (this.rememberMeCheckbox.checked) {
-      this.rememberEmail(this.emailInput.value);
+      storage.rememberEmail(this.emailInput.value);
     } else {
-      this.forgetEmail();
+      storage.forgetEmail();
     }
 
     // Show loading state
     this.showLoadingState();
+    this.isSubmitting = true;
 
-    // Simulate API call delay
-    setTimeout(() => {
+    try {
+      // Call authentication service
+      const result = await authService.login(
+        this.emailInput.value.trim(),
+        this.passwordInput.value
+      );
+
+      if (result.success) {
+        this.handleSuccess(result.user);
+      } else {
+        this.handleError(result.error);
+      }
+    } catch (error) {
+      this.handleError('An unexpected error occurred');
+    } finally {
       this.hideLoadingState();
-      this.handleSuccess();
-    }, 2000);
+      this.isSubmitting = false;
+    }
   }
 
   /**
@@ -207,14 +204,29 @@ class LoginForm {
 
   /**
    * Handle successful form submission
+   * @param {object} user - User data from auth service
    */
-  handleSuccess() {
-    console.log('Login submitted:', {
-      email: this.emailInput.value,
+  handleSuccess(user) {
+    console.log('Login successful:', {
+      email: user?.email || this.emailInput.value,
       rememberMe: this.rememberMeCheckbox.checked,
     });
 
     this.showSuccessMessage();
+
+    // Redirect after short delay
+    setTimeout(() => {
+      window.location.href = '/dashboard';
+    }, 1500);
+  }
+
+  /**
+   * Handle login error
+   * @param {string} errorMessage - Error message from auth service
+   */
+  handleError(errorMessage) {
+    console.error('Login error:', errorMessage);
+    this.showErrorMessage(errorMessage);
   }
 
   /**
@@ -232,6 +244,9 @@ class LoginForm {
       z-index: 1000;
       padding: 0.75rem 1.25rem;
       box-shadow: var(--shadow-md);
+      background-color: var(--color-success, #10b981);
+      color: white;
+      border-radius: var(--radius-md, 0.375rem);
     `;
 
     document.body.appendChild(alert);
@@ -243,40 +258,42 @@ class LoginForm {
   }
 
   /**
-   * Save email to localStorage
-   * @param {string} email - Email address to save
+   * Display error notification
+   * @param {string} errorMessage - Error message to display
    */
-  rememberEmail(email) {
-    try {
-      localStorage.setItem('taskflow_remembered_email', email);
-    } catch (error) {
-      console.warn('Failed to save email preference:', error);
-    }
+  showErrorMessage(errorMessage) {
+    const alert = document.createElement('div');
+    alert.className = 'alert-error';
+    alert.setAttribute('role', 'alert');
+    alert.textContent = errorMessage || 'Login failed. Please try again.';
+    alert.style.cssText = `
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 1000;
+      padding: 0.75rem 1.25rem;
+      box-shadow: var(--shadow-md);
+      background-color: var(--color-danger, #ef4444);
+      color: white;
+      border-radius: var(--radius-md, 0.375rem);
+    `;
+
+    document.body.appendChild(alert);
+
+    // Remove alert after 5 seconds
+    setTimeout(() => {
+      alert.remove();
+    }, 5000);
   }
 
   /**
-   * Remove saved email from localStorage
-   */
-  forgetEmail() {
-    try {
-      localStorage.removeItem('taskflow_remembered_email');
-    } catch (error) {
-      console.warn('Failed to remove email preference:', error);
-    }
-  }
-
-  /**
-   * Load previously saved email from localStorage
+   * Load previously saved email from storage service
    */
   loadRememberedEmail() {
-    try {
-      const rememberedEmail = localStorage.getItem('taskflow_remembered_email');
-      if (rememberedEmail) {
-        this.emailInput.value = rememberedEmail;
-        this.rememberMeCheckbox.checked = true;
-      }
-    } catch (error) {
-      console.warn('Failed to load email preference:', error);
+    const rememberedEmail = storage.loadRememberedEmail();
+    if (rememberedEmail) {
+      this.emailInput.value = rememberedEmail;
+      this.rememberMeCheckbox.checked = true;
     }
   }
 }
