@@ -1,0 +1,24 @@
+/**
+ * Global Styles Index
+ * Import all global and component styles
+ */
+
+/* Design System */
+@import url('./variables.css');
+@import url('./global.css');
+
+/* Layouts */
+@import url('../layouts/AuthLayout/AuthLayout.css');
+@import url('../layouts/DashboardLayout/DashboardLayout.css');
+
+/* Pages */
+@import url('../pages/Dashboard/Dashboard.css');
+@import url('../pages/Tasks/Tasks.css');
+@import url('../pages/Profile/Profile.css');
+@import url('../pages/NotFound/NotFound.css');
+
+/* Components */
+@import url('../components/Button/Button.css');
+
+/* Login Page */
+@import url('../pages/login/login.css');

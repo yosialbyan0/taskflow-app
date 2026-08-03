@@ -1,0 +1,50 @@
+/* Not Found Page Styles */
+
+.not-found-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-lg);
+  background-color: var(--bg-page);
+}
+
+.not-found-container {
+  text-align: center;
+  max-width: var(--container-sm);
+}
+
+.not-found-title {
+  font-size: 6rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin: 0;
+  line-height: 1;
+}
+
+.not-found-heading {
+  font-size: var(--font-size-3xl);
+  color: var(--text-primary);
+  margin: var(--space-md) 0;
+}
+
+.not-found-message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.not-found-link {
+  display: inline-block;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+
+.not-found-link:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+}
