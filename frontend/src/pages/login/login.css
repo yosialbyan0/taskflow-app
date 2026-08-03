@@ -1,0 +1,367 @@
+/* ============================================================
+   Login Page Stylesheet
+   ============================================================ */
+
+/* ============================================================
+   Page Layout
+   ============================================================ */
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+}
+
+/* ============================================================
+   Branding Section
+   ============================================================ */
+
+.branding-section {
+  margin-bottom: var(--space-xl);
+}
+
+.logo {
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
+}
+
+/* ============================================================
+   Login Card & Form
+   ============================================================ */
+
+.login-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   Form Controls
+   ============================================================ */
+
+.form-control {
+  padding: var(--space-md);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-normal),
+              box-shadow var(--transition-normal);
+}
+
+.form-control:hover:not(:focus) {
+  border-color: var(--border-color-strong);
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+.form-control.is-invalid {
+  border-color: var(--color-danger);
+  background-image: none;
+}
+
+.form-control.is-invalid:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Form Label */
+.form-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+/* Form Error Message */
+.form-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  min-height: 1.25rem;
+}
+
+/* ============================================================
+   Password Field
+   ============================================================ */
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+  position: absolute;
+  right: var(--space-md);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-normal);
+  border-radius: var(--radius-sm);
+  z-index: 10;
+}
+
+.password-toggle:hover {
+  color: var(--text-primary);
+}
+
+.password-toggle:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.password-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ============================================================
+   Form Checkboxes
+   ============================================================ */
+
+.form-check {
+  gap: var(--space-sm);
+}
+
+.form-check-input {
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-normal),
+              border-color var(--transition-normal),
+              box-shadow var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.form-check-input:hover:not(:checked) {
+  border-color: var(--border-color-strong);
+}
+
+.form-check-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.form-check-label {
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition-normal);
+  margin-bottom: 0;
+}
+
+.form-check:hover .form-check-label {
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   Links
+   ============================================================ */
+
+a {
+  color: var(--color-primary);
+  transition: text-decoration var(--transition-fast);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+
+.btn {
+  padding: calc(var(--space-md) - 0.125rem) var(--space-lg);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 2.75rem;
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  border: none;
+  color: var(--text-inverse);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* Secondary/Outline Button */
+.btn-outline-secondary {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-outline-secondary:hover:not(:disabled) {
+  background-color: var(--bg-muted);
+  border-color: var(--border-color-strong);
+}
+
+.btn-outline-secondary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* ============================================================
+   Divider
+   ============================================================ */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider span {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+
+.footer {
+  background-color: var(--bg-muted);
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+.footer-nav {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.footer-nav a {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  transition: color var(--transition-normal);
+}
+
+.footer-nav a:hover {
+  color: var(--color-primary);
+}
+
+/* ============================================================
+   Loading State Animation
+   ============================================================ */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn:disabled svg {
+  animation: spin 0.6s linear infinite;
+}
+
+/* ============================================================
+   Success Alert
+   ============================================================ */
+
+.alert-success {
+  background-color: var(--color-success-light);
+  border: 1px solid var(--color-success);
+  color: var(--color-success-dark);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+/* ============================================================
+   Responsive Design
+   ============================================================ */
+
+@media (max-width: 576px) {
+  .login-card {
+    padding: var(--space-lg);
+  }
+
+  .branding-section {
+    margin-bottom: var(--space-lg);
+  }
+
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .footer-nav {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+}
