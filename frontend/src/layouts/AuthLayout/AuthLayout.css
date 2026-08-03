@@ -1,0 +1,21 @@
+/* Auth Layout Styles */
+
+.auth-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+}
+
+.auth-layout__main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.auth-layout__content {
+  width: 100%;
+  max-width: var(--container-sm);
+}
